@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sana Özel ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700&display=swap');
+        body { font-family: 'Nunito', sans-serif; overflow-x: hidden; background-color: #fff5f8; cursor: pointer; touch-action: manipulation; }
+        .font-romantic { font-family: 'Dancing Script', cursive; }
+        .heart-particle { position: absolute; pointer-events: none; animation: floatUp 1s ease-out forwards; z-index: 100; font-size: 24px; }
+        @keyframes floatUp { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -150%) scale(1.5); opacity: 0; } }
+        
+        /* Mektup ve Zarf Animasyonu */
+        .envelope-container { position: relative; width: 320px; height: 200px; margin-top: 100px; transition: all 1s ease; display: none; }
+        .envelope { position: absolute; width: 100%; height: 100%; background: #ff7ac8; border-radius: 0 0 15px 15px; z-index: 2; }
+        .envelope-flap { position: absolute; top: 0; width: 0; height: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 120px solid #ff4763; transform-origin: top; transition: all 0.6s ease 0.4s; z-index: 3; }
+        .envelope.open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        
+        .letter-card { 
+            position: absolute; bottom: 5px; left: 10px; width: 300px; height: 180px; 
+            background: white; transition: all 0.8s ease 1s; padding: 25px; 
+            border-radius: 15px; z-index: 2; box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            overflow-y: auto; text-align: left;
+        }
+        .envelope.open .letter-card { transform: translateY(-320px); height: 500px; width: 340px; left: -10px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        
+        .btn-animate { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .hidden { display: none; }
+    </style>
+</head>
+<body onclick="createHeart(event)">
+
+    <div id="app" class="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+        
+        <div id="step-container" class="space-y-6">
+            <img id="status-gif" src="https://media.tenor.com/v2/a33488f8d97607a2d46e3a098495a043/tenor.gif" class="h-48 mx-auto mb-4 rounded-full border-4 border-pink-300">
+            <h1 id="step-text" class="text-2xl font-bold text-pink-600 px-4">Canım sevgilim, senin için küçük bir şey hazırladım...</h1>
+            <button id="main-btn" onclick="nextStep()" class="bg-pink-500 text-white px-10 py-4 rounded-full text-xl font-bold shadow-lg hover:bg-pink-600 active:scale-90 transition-all">
+                Tıkla Aşkım ❤️
+            </button>
+        </div>
+
+        <div id="envelope-wrapper" class="envelope-container">
+            <div id="envelope" class="envelope">
+                <div class="envelope-flap"></div>
+                <div class="letter-card">
+                    <p class="text-gray-800 text-base leading-relaxed font-semibold">
+                        Aşkım, canım sevgilim... Seninle geçen her an, hayatımın en güzel hediyesi. 
+                        Gözlerine her baktığımda, dünyadaki tüm dertleri unutuyorum. 
+                        Senin gülüşün, kalbimin en tatlı melodisi.
+                        Bana sevmeyi, sevilmeyi, hayatın ne kadar güzel olabileceğini öğrettin.
+                        İyi ki varsın, iyi ki benimsin. Seninle bir ömür, bana yetmez...
+                        Seni kelimelerin tarif edemeyeceği kadar çok seviyorum. ❤️ <br><br>
+                        <span class="text-pink-600 font-bold text-lg">Benimle uzun bir yola varmısın? Darlıkta bollukta, hastalıkta sağlıkta, sıkıntıda mutlulukta benimle bir ömür yaşamaya varmısın?</span>
+                    </p>
+                    
+                    <div id="final-decision" class="mt-8 flex flex-col gap-4">
+                        <button id="yes-btn" onclick="handleYes()" class="bg-green-500 text-white py-3 rounded-xl font-bold text-xl shadow-lg btn-animate">EVET 😍</button>
+                        <button id="no-btn" onmouseover="moveNo()" onclick="moveNo()" class="bg-gray-400 text-white py-2 rounded-lg font-bold text-sm">Hayır 💔</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="form-section" class="hidden w-full max-w-md bg-white p-8 rounded-[40px] shadow-2xl border-t-8 border-pink-500 animate-bounce-in">
+            <h2 class="text-3xl font-romantic text-pink-600 mb-6">Cevabını Yaz Aşkım... ❤️</h2>
+            <form action="https://formspree.io/f/YOUR_EMAIL_HERE" method="POST" class="flex flex-col gap-4">
+                <textarea name="sevgilimin_notu" required class="border-2 border-pink-100 rounded-2xl p-4 h-32 focus:outline-none focus:border-pink-500 text-gray-700" placeholder="İçinden ne geliyorsa yaz sevgilim..."></textarea>
+                <button type="submit" class="bg-pink-500 text-white py-4 rounded-2xl font-bold text-lg hover:bg-pink-600 shadow-glow">Mesajımı Gönder 💞</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let yesClickCount = 0;
+        let noMoveCount = 0;
+
+        const buttonStages = [
+            { text: "Sevgilim...", btn: "Efendim aşkım? ❤️" },
+            { text: "Bir daha tıkla bakayım...", btn: "Tıkladım bile! 😍" },
+            { text: "Az kaldı merak etme...", btn: "Hadi ama bekliyorum 😋" },
+            { text: "Son kez tıkla aşkım...", btn: "Veee tık! ❤️" }
+        ];
+
+        function createHeart(e) {
+            const emojis = ['❤️','💖','💝','💗','💓','❤️‍🔥','💞','🩷','💚','🧡','💙','💜','🤎','❤️‍🩹','🩶','🤍','💛'];
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.left = (e.clientX || e.touches[0].clientX) + 'px';
+            heart.style.top = (e.clientY || e.touches[0].clientY) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+        }
+
+        function nextStep() {
+            if (currentStep <= buttonStages.length) {
+                document.getElementById('step-text').innerText = buttonStages[currentStep-1].text;
+                document.getElementById('main-btn').innerText = buttonStages[currentStep-1].btn;
+                currentStep++;
+            } else {
+                startEnvelopeSequence();
+            }
+        }
+
+        function startEnvelopeSequence() {
+            document.getElementById('step-container').style.display = 'none';
+            const wrapper = document.getElementById('envelope-wrapper');
+            wrapper.style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('envelope').classList.add('open');
+            }, 500);
+        }
+
+        function handleYes() {
+            yesClickCount++;
+            const yesBtn = document.getElementById('yes-btn');
+            
+            // Buton animasyonu (gidip gelme)
+            yesBtn.style.transform = "scale(0.8)";
+            setTimeout(() => { yesBtn.style.transform = "scale(1.2)"; }, 150);
+            setTimeout(() => { yesBtn.style.transform = "scale(1)"; }, 300);
+
+            if (yesClickCount === 1) {
+                yesBtn.innerText = "Seni Çok Seviyorum! ❤️";
+            } else if (yesClickCount === 2) {
+                yesBtn.innerText = "Son kez tıkla aşkım! 💍";
+            } else if (yesClickCount === 3) {
+                document.getElementById('envelope-wrapper').style.display = 'none';
+                document.getElementById('form-section').classList.remove('hidden');
+            }
+        }
+
+        function moveNo() {
+            noMoveCount++;
+            const noBtn = document.getElementById('no-btn');
+            
+            if(noMoveCount < 10) {
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = Math.random() * 70 + 15 + '%';
+                noBtn.style.top = Math.random() * 70 + 15 + '%';
+                noBtn.innerText = `Hayır (${10 - noMoveCount})`;
+                noBtn.style.zIndex = "100";
+            } else {
+                noBtn.style.display = 'none';
+                alert("Kaçamazsın ki benden! Hayır butonunu kaldırdım bile 😊");
+            }
+        }
+    </script>
+</body>
+</html>

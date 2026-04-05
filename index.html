@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sana Özel ❤️</title>
+    <title>Sana Özel Bir Sürpriz ❤️</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700&display=swap');
@@ -12,7 +12,7 @@
         @keyframes floatUp { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -150%) scale(1.5); opacity: 0; } }
 
         /* Zarf Tasarımı */
-        .envelope-wrapper { position: relative; width: 280px; height: 180px; margin: 100px auto; display: none; cursor: pointer; perspective: 1000px; }
+        .envelope-wrapper { position: relative; width: 280px; height: 180px; margin: 80px auto; display: none; cursor: pointer; perspective: 1000px; }
         .envelope { width: 100%; height: 100%; background: #ff85a2; border-radius: 0 0 10px 10px; position: relative; transition: transform 0.5s; transform-style: preserve-3d; }
         .flap { position: absolute; top: 0; width: 0; height: 0; border-left: 140px solid transparent; border-right: 140px solid transparent; border-top: 100px solid #ff4d6d; transform-origin: top; z-index: 3; transition: transform 0.6s ease; }
         .seal { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: white; border-radius: 50%; z-index: 4; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); color: #ff4d6d; font-size: 20px; }
@@ -27,16 +27,17 @@
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             display: flex; flex-direction: column;
+            background-image: radial-gradient(#ffe5ec 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        /* Kartın Ortalanmış Hali */
         .envelope.open .card { 
             opacity: 1; position: fixed; top: 50%; left: 50%;
             width: 90%; max-width: 340px; height: auto;
             transform: translate(-50%, -50%) rotateY(360deg);
             z-index: 50; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             background-image: radial-gradient(#ffe5ec 1px, transparent 1px);
-            background-size: 15px 15px;
+            background-size: 20px 20px;
         }
 
         .hidden { display: none; }
@@ -48,7 +49,7 @@
         
         <div id="step-container" class="space-y-6">
             <img src="https://media.tenor.com/v2/a33488f8d97607a2d46e3a098495a043/tenor.gif" class="h-32 mx-auto rounded-full border-4 border-pink-400">
-            <h1 id="step-text" class="text-xl font-bold text-pink-600 px-4">Sana bir sürprizim var sevgilim...</h1>
+            <h1 id="step-text" class="text-xl font-bold text-pink-600 px-4">Canım sevgilim, senin için küçük bir şey hazırladım...</h1>
             <button id="main-btn" onclick="nextStep()" class="bg-pink-500 text-white px-8 py-3 rounded-full font-bold shadow-lg active:scale-90 transition-all">Tıkla ❤️</button>
         </div>
 
@@ -57,12 +58,11 @@
                 <div class="flap"></div>
                 <div class="seal">❤️</div>
                 <div id="card" class="card">
-                    <p class="text-gray-800 text-[13px] md:text-sm leading-relaxed font-semibold text-left mb-4">
-                        Aşkım, canım sevgilim... Seninle geçen her an, hayatımın en güzel hediyesi. 
-                        sesini her duyduğumda, dünyadaki tüm dertleri unutuyorum. 
-                        Senin gülüşün, kalbimin en tatlı melodisi.
+                    <p class="text-gray-800 text-[13px] leading-relaxed font-semibold text-left mb-4">
+                        Aşkım, canım sevgilim... Seninle aramızdaki mesafeler ne kadar uzun olursa olsun, kalbim her an seninle atıyor. 
+                        Seni düşünmediğim tek bir anım bile yok. Varlığın, dünyadaki tüm dertleri unutturmaya yetiyor. 
                         Bana sevmeyi, sevilmeyi, hayatın ne kadar güzel olabileceğini öğrettin.
-                        İyi ki varsın, iyi ki benimsin. Seninle bir ömür, bana yetmez...
+                        Seninle kavuşacağımız günü iple çekiyorum. İyi ki varsın, iyi ki benimsin. Seninle bir ömür, bana yetmez...
                         Seni kelimelerin tarif edemeyeceği kadar çok seviyorum. ❤️
                         <br><br>
                         <span class="text-pink-600">Benimle uzun bir yola varmısın? Darlıkta bollukta, hastalıkta sağlıkta, sıkıntıda mutlulukta benimle bir ömür yaşamaya varmısın?</span>
@@ -78,11 +78,11 @@
         </div>
 
         <div id="form-section" class="hidden w-full max-w-xs bg-white p-6 rounded-3xl shadow-2xl border-b-4 border-pink-500">
-            <h2 class="text-lg font-bold text-pink-600 mb-4">Bana mesajını yaz... ❤️</h2>
-            <form action="https://formspree.io/f/YOUR_EMAIL_HERE" method="POST" class="flex flex-col gap-3">
-                <textarea name="mesaj" required class="border border-pink-100 rounded-lg p-3 h-24 text-sm outline-none focus:border-pink-500" placeholder="İçinden ne geliyorsa..."></textarea>
-                <button type="submit" class="bg-pink-500 text-white py-2 rounded-lg font-bold text-sm">Gönder 💞</button>
-            </form>
+            <h2 class="text-lg font-bold text-pink-600 mb-4">Bana mesajını yaz aşkım... ❤️</h2>
+            <div class="flex flex-col gap-3">
+                <textarea id="msg-input" required class="border border-pink-100 rounded-lg p-3 h-24 text-sm outline-none focus:border-pink-500" placeholder="İçinden ne geliyorsa..."></textarea>
+                <button onclick="sendToTelegram()" id="send-btn" class="bg-pink-500 text-white py-2 rounded-lg font-bold text-sm">Mesajı Gönder 💞</button>
+            </div>
         </div>
     </div>
 
@@ -91,8 +91,13 @@
         let yesClicks = 0;
         let noMoves = 0;
 
+        // --- TELEGRAM AYARLARIN ---
+        const botToken = "8671726037:AAGerFhkOfEQE_gTuGx0tFaPPHRChn1wUkA"; 
+        const chatId = "7979504487";
+        // --------------------------
+
         function nextStep() {
-            const stages = ["Bir daha tıkla...", "Az kaldı...", "İşte burada! ✨"];
+            const stages = ["Sevgilim...", "Bir daha tıkla bakayım...", "Hazır mısın? ❤️"];
             if(step < stages.length) {
                 document.getElementById('step-text').innerText = stages[step];
                 step++;
@@ -105,9 +110,7 @@
         function openEnvelope() {
             document.getElementById('envelope').classList.add('open');
             document.getElementById('tap-hint').style.display = 'none';
-            setTimeout(() => {
-                document.getElementById('btn-group').classList.remove('hidden');
-            }, 1000);
+            setTimeout(() => { document.getElementById('btn-group').classList.remove('hidden'); }, 1000);
         }
 
         function handleYes(e) {
@@ -133,13 +136,34 @@
                 btn.style.left = Math.random() * 70 + 15 + '%';
                 btn.style.top = Math.random() * 70 + 15 + '%';
                 btn.innerText = `Hayır (${10 - noMoves})`;
-            } else {
-                btn.style.display = 'none';
-            }
+            } else { btn.style.display = 'none'; }
+        }
+
+        function sendToTelegram() {
+            const msg = document.getElementById('msg-input').value;
+            const btn = document.getElementById('send-btn');
+            if(!msg) return alert("Boş bırakma aşkım ❤️");
+
+            btn.innerText = "Gönderiliyor...";
+            btn.disabled = true;
+
+            const text = encodeURIComponent(`❤️ Aşkından Mesaj Var! ❤️\n\nMesaj: ${msg}`);
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${text}`;
+
+            fetch(url).then(res => {
+                if(res.ok) {
+                    alert("Mesajın bana ulaştı sevgilim! Seni çok seviyorum ❤️");
+                    btn.innerText = "Gönderildi ✅";
+                } else { throw new Error(); }
+            }).catch(() => {
+                alert("Mesaj gönderilemedi. Lütfen botu Telegram'dan başlattığından (/start) emin ol!");
+                btn.disabled = false;
+                btn.innerText = "Tekrar Dene";
+            });
         }
 
         function createHeart(e) {
-            const emojis = ['❤️','💖','💝','💗','💓'];
+            const emojis = ['❤️','💖','💝','💗','💓','💞'];
             const heart = document.createElement('div');
             heart.className = 'heart-particle';
             heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];

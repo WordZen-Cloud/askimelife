@@ -7,26 +7,50 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700&display=swap');
-        body { font-family: 'Nunito', sans-serif; overflow-x: hidden; background-color: #fff5f8; cursor: pointer; touch-action: manipulation; }
+        
+        body { font-family: 'Nunito', sans-serif; background-color: #fff0f3; overflow-x: hidden; touch-action: manipulation; }
         .font-romantic { font-family: 'Dancing Script', cursive; }
+
+        /* Kalp Tıklama Efekti */
         .heart-particle { position: absolute; pointer-events: none; animation: floatUp 1s ease-out forwards; z-index: 100; font-size: 24px; }
         @keyframes floatUp { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -150%) scale(1.5); opacity: 0; } }
+
+        /* Zarf ve Mektup Mekaniği */
+        .envelope-container { position: relative; width: 300px; height: 200px; cursor: pointer; perspective: 1000px; display: none; margin: 100px auto; }
+        .envelope { position: relative; width: 100%; height: 100%; background: #ff85a2; border-radius: 0 0 10px 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transform-style: preserve-3d; transition: transform 0.5s; }
         
-        /* Mektup ve Zarf Animasyonu */
-        .envelope-container { position: relative; width: 320px; height: 200px; margin-top: 100px; transition: all 1s ease; display: none; }
-        .envelope { position: absolute; width: 100%; height: 100%; background: #ff7ac8; border-radius: 0 0 15px 15px; z-index: 2; }
-        .envelope-flap { position: absolute; top: 0; width: 0; height: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 120px solid #ff4763; transform-origin: top; transition: all 0.6s ease 0.4s; z-index: 3; }
-        .envelope.open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        /* Zarfın Kapağı (Tam Kapalı) */
+        .flap { position: absolute; top: 0; width: 0; height: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 110px solid #ff4d6d; transform-origin: top; z-index: 3; transition: transform 0.6s ease; border-radius: 5px; }
         
-        .letter-card { 
-            position: absolute; bottom: 5px; left: 10px; width: 300px; height: 180px; 
-            background: white; transition: all 0.8s ease 1s; padding: 25px; 
-            border-radius: 15px; z-index: 2; box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            overflow-y: auto; text-align: left;
+        /* Kalp Mühür */
+        .seal { position: absolute; top: 90px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; background: #fff; border-radius: 50%; z-index: 4; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: opacity 0.3s; font-size: 25px; color: #ff4d6d; }
+
+        .envelope.open .flap { transform: rotateX(180deg); z-index: 1; }
+        .envelope.open .seal { opacity: 0; }
+
+        /* Mektup Kartı */
+        .card { 
+            position: absolute; top: 10px; left: 10px; width: 280px; height: 180px; 
+            background: white; border-radius: 15px; z-index: 2;
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background-image: radial-gradient(#ffe5ec 1px, transparent 1px);
+            background-size: 20px 20px; /* Arka plan kalpli/noktalı hava */
+            opacity: 0; transform: scale(0.5) rotateY(0deg);
+            display: flex; flex-col; justify-content: space-between;
         }
-        .envelope.open .letter-card { transform: translateY(-320px); height: 500px; width: 340px; left: -10px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        
-        .btn-animate { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* Kartın Ekrana Ortalanması ve Dönmesi */
+        .envelope.open .card { 
+            opacity: 1;
+            position: fixed; top: 50%; left: 50%;
+            width: 350px; height: auto; min-height: 450px;
+            transform: translate(-50%, -50%) rotateY(360deg) scale(1);
+            z-index: 50; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .card-bg-hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.05; pointer-events: none; font-size: 100px; display: flex; align-items: center; justify-content: center; }
+
         .hidden { display: none; }
     </style>
 </head>
@@ -35,119 +59,115 @@
     <div id="app" class="flex flex-col items-center justify-center min-h-screen p-4 text-center">
         
         <div id="step-container" class="space-y-6">
-            <img id="status-gif" src="https://media.tenor.com/v2/a33488f8d97607a2d46e3a098495a043/tenor.gif" class="h-48 mx-auto mb-4 rounded-full border-4 border-pink-300">
-            <h1 id="step-text" class="text-2xl font-bold text-pink-600 px-4">Canım sevgilim, senin için küçük bir şey hazırladım...</h1>
-            <button id="main-btn" onclick="nextStep()" class="bg-pink-500 text-white px-10 py-4 rounded-full text-xl font-bold shadow-lg hover:bg-pink-600 active:scale-90 transition-all">
-                Tıkla Aşkım ❤️
-            </button>
+            <img src="https://media.tenor.com/v2/a33488f8d97607a2d46e3a098495a043/tenor.gif" class="h-40 mx-auto rounded-full border-4 border-pink-400 shadow-lg">
+            <h1 id="step-text" class="text-2xl font-bold text-pink-600">Canım sevgilim, sana bir sürprizim var...</h1>
+            <button id="main-btn" onclick="nextStep()" class="bg-pink-500 text-white px-8 py-3 rounded-full text-lg font-bold shadow-xl active:scale-90 transition-all">Tıkla Aşkım ❤️</button>
         </div>
 
-        <div id="envelope-wrapper" class="envelope-container">
+        <div id="envelope-container" class="envelope-container" onclick="openEnvelope()">
             <div id="envelope" class="envelope">
-                <div class="envelope-flap"></div>
-                <div class="letter-card">
-                    <p class="text-gray-800 text-base leading-relaxed font-semibold">
-                        Aşkım, canım sevgilim... Seninle geçen her an, hayatımın en güzel hediyesi. 
-                        Gözlerine her baktığımda, dünyadaki tüm dertleri unutuyorum. 
-                        Senin gülüşün, kalbimin en tatlı melodisi.
-                        Bana sevmeyi, sevilmeyi, hayatın ne kadar güzel olabileceğini öğrettin.
-                        İyi ki varsın, iyi ki benimsin. Seninle bir ömür, bana yetmez...
-                        Seni kelimelerin tarif edemeyeceği kadar çok seviyorum. ❤️ <br><br>
-                        <span class="text-pink-600 font-bold text-lg">Benimle uzun bir yola varmısın? Darlıkta bollukta, hastalıkta sağlıkta, sıkıntıda mutlulukta benimle bir ömür yaşamaya varmısın?</span>
-                    </p>
+                <div class="flap"></div>
+                <div class="seal">❤️</div>
+                <div id="card" class="card">
+                    <div class="card-bg-hearts">❤️</div>
+                    <div class="relative z-10">
+                        <p class="text-gray-800 text-sm md:text-base leading-relaxed font-semibold text-left">
+                            Aşkım, canım sevgilim... Seninle geçen her an, hayatımın en güzel hediyesi. 
+                            Gözlerine her baktığımda, dünyadaki tüm dertleri unutuyorum. 
+                            Senin gülüşün, kalbimin en tatlı melodisi.
+                            Bana sevmeyi, sevilmeyi, hayatın ne kadar güzel olabileceğini öğrettin.
+                            İyi ki varsın, iyi ki benimsin. Seninle bir ömür, bana yetmez...
+                            Seni kelimelerin tarif edemeyeceği kadar çok seviyorum. ❤️
+                            <br><br>
+                            <span class="text-pink-600 font-bold">Benimle uzun bir yola varmısın? Darlıkta bollukta, hastalıkta sağlıkta, sıkıntıda mutlulukta benimle bir ömür yaşamaya varmısın?</span>
+                        </p>
+                    </div>
                     
-                    <div id="final-decision" class="mt-8 flex flex-col gap-4">
-                        <button id="yes-btn" onclick="handleYes()" class="bg-green-500 text-white py-3 rounded-xl font-bold text-xl shadow-lg btn-animate">EVET 😍</button>
-                        <button id="no-btn" onmouseover="moveNo()" onclick="moveNo()" class="bg-gray-400 text-white py-2 rounded-lg font-bold text-sm">Hayır 💔</button>
+                    <div id="btn-group" class="mt-6 flex justify-center gap-4 hidden">
+                        <button id="yes-btn" onclick="handleYes(event)" class="bg-green-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg transition-transform active:scale-95">EVET 😍</button>
+                        <button id="no-btn" onmouseover="moveNo()" onclick="moveNo()" class="bg-gray-400 text-white px-6 py-2 rounded-xl font-bold shadow-lg">Hayır 💔</button>
                     </div>
                 </div>
             </div>
+            <p id="tap-hint" class="mt-4 text-pink-400 animate-pulse font-bold">Zarfı Açmak İçin Tıkla ✨</p>
         </div>
 
-        <div id="form-section" class="hidden w-full max-w-md bg-white p-8 rounded-[40px] shadow-2xl border-t-8 border-pink-500 animate-bounce-in">
-            <h2 class="text-3xl font-romantic text-pink-600 mb-6">Cevabını Yaz Aşkım... ❤️</h2>
-            <form action="https://formspree.io/f/jetalicr@gmail.com" method="POST" class="flex flex-col gap-4">
-                <textarea name="sevgilimin_notu" required class="border-2 border-pink-100 rounded-2xl p-4 h-32 focus:outline-none focus:border-pink-500 text-gray-700" placeholder="İçinden ne geliyorsa yaz sevgilim..."></textarea>
-                <button type="submit" class="bg-pink-500 text-white py-4 rounded-2xl font-bold text-lg hover:bg-pink-600 shadow-glow">Mesajımı Gönder 💞</button>
+        <div id="form-section" class="hidden w-full max-w-md bg-white p-8 rounded-[30px] shadow-2xl border-b-8 border-pink-500">
+            <h2 class="text-2xl font-romantic text-pink-600 mb-4">Şimdi bana bir şeyler yaz... ❤️</h2>
+            <form action="https://formspree.io/f/YOUR_EMAIL_HERE" method="POST" class="flex flex-col gap-4">
+                <textarea name="mesaj" required class="border-2 border-pink-100 rounded-xl p-4 h-32 focus:border-pink-500 outline-none" placeholder="Seni seviyorum çünkü..."></textarea>
+                <button type="submit" class="bg-pink-500 text-white py-3 rounded-xl font-bold">Sana Gönderiyorum 💞</button>
             </form>
         </div>
+
     </div>
 
     <script>
-        let currentStep = 1;
-        let yesClickCount = 0;
-        let noMoveCount = 0;
-
-        const buttonStages = [
-            { text: "Sevgilim...", btn: "Efendim aşkım? ❤️" },
-            { text: "Bir daha tıkla bakayım...", btn: "Tıkladım bile! 😍" },
-            { text: "Az kaldı merak etme...", btn: "Hadi ama bekliyorum 😋" },
-            { text: "Son kez tıkla aşkım...", btn: "Veee tık! ❤️" }
-        ];
-
-        function createHeart(e) {
-            const emojis = ['❤️','💖','💝','💗','💓','❤️‍🔥','💞','🩷','💚','🧡','💙','💜','🤎','❤️‍🩹','🩶','🤍','💛'];
-            const heart = document.createElement('div');
-            heart.className = 'heart-particle';
-            heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-            heart.style.left = (e.clientX || e.touches[0].clientX) + 'px';
-            heart.style.top = (e.clientY || e.touches[0].clientY) + 'px';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 1000);
-        }
+        let step = 0;
+        let yesClicks = 0;
+        let noMoves = 0;
 
         function nextStep() {
-            if (currentStep <= buttonStages.length) {
-                document.getElementById('step-text').innerText = buttonStages[currentStep-1].text;
-                document.getElementById('main-btn').innerText = buttonStages[currentStep-1].btn;
-                currentStep++;
+            const steps = [
+                {t: "Biraz daha sabret sevgilim...", b: "Tıkladım! ❤️"},
+                {t: "İçerisi çok romantik olacak...", b: "Hadi görelim 😍"},
+                {t: "Ve işte senin için...", b: "Zarfı Göster ✨"}
+            ];
+            if(step < steps.length) {
+                document.getElementById('step-text').innerText = steps[step].t;
+                document.getElementById('main-btn').innerText = steps[step].b;
+                step++;
             } else {
-                startEnvelopeSequence();
+                document.getElementById('step-container').style.display = 'none';
+                document.getElementById('envelope-container').style.display = 'block';
             }
         }
 
-        function startEnvelopeSequence() {
-            document.getElementById('step-container').style.display = 'none';
-            const wrapper = document.getElementById('envelope-wrapper');
-            wrapper.style.display = 'block';
+        function openEnvelope() {
+            document.getElementById('envelope').classList.add('open');
+            document.getElementById('tap-hint').style.display = 'none';
             setTimeout(() => {
-                document.getElementById('envelope').classList.add('open');
-            }, 500);
+                document.getElementById('btn-group').classList.remove('hidden');
+            }, 1500);
         }
 
-        function handleYes() {
-            yesClickCount++;
-            const yesBtn = document.getElementById('yes-btn');
-            
-            // Buton animasyonu (gidip gelme)
-            yesBtn.style.transform = "scale(0.8)";
-            setTimeout(() => { yesBtn.style.transform = "scale(1.2)"; }, 150);
-            setTimeout(() => { yesBtn.style.transform = "scale(1)"; }, 300);
+        function handleYes(e) {
+            e.stopPropagation();
+            yesClicks++;
+            const btn = document.getElementById('yes-btn');
+            btn.style.transform = "scale(1.3)";
+            setTimeout(() => btn.style.transform = "scale(1)", 200);
 
-            if (yesClickCount === 1) {
-                yesBtn.innerText = "Seni Çok Seviyorum! ❤️";
-            } else if (yesClickCount === 2) {
-                yesBtn.innerText = "Son kez tıkla aşkım! 💍";
-            } else if (yesClickCount === 3) {
-                document.getElementById('envelope-wrapper').style.display = 'none';
+            if(yesClicks === 1) btn.innerText = "Emin misin? 😉";
+            else if(yesClicks === 2) btn.innerText = "Son kez tıkla! ❤️";
+            else {
+                document.getElementById('envelope-container').classList.add('hidden');
                 document.getElementById('form-section').classList.remove('hidden');
             }
         }
 
         function moveNo() {
-            noMoveCount++;
-            const noBtn = document.getElementById('no-btn');
-            
-            if(noMoveCount < 10) {
-                noBtn.style.position = 'fixed';
-                noBtn.style.left = Math.random() * 70 + 15 + '%';
-                noBtn.style.top = Math.random() * 70 + 15 + '%';
-                noBtn.innerText = `Hayır (${10 - noMoveCount})`;
-                noBtn.style.zIndex = "100";
+            noMoves++;
+            const btn = document.getElementById('no-btn');
+            if(noMoves < 10) {
+                btn.style.position = 'fixed';
+                btn.style.left = Math.random() * 80 + 10 + '%';
+                btn.style.top = Math.random() * 80 + 10 + '%';
+                btn.innerText = `Hayır (${10 - noMoves})`;
             } else {
-                noBtn.style.display = 'none';
-                alert("Kaçamazsın ki benden! Hayır butonunu kaldırdım bile 😊");
+                btn.style.display = 'none';
             }
+        }
+
+        function createHeart(e) {
+            const emojis = ['❤️','💖','💝','💗','💓','💞','🩷','🤍','💛'];
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.left = (e.clientX || (e.touches && e.touches[0].clientX)) + 'px';
+            heart.style.top = (e.clientY || (e.touches && e.touches[0].clientY)) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
         }
     </script>
 </body>
